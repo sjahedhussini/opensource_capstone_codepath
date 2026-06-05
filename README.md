@@ -4,7 +4,7 @@
 **Contribution Number:** [1]  
 **Student:** [Sayed Jahed Hussini]  
 **Issue:** [[GitHub issue link](https://github.com/apache/fory/issues/2941)]  
-**Status:** [Phase I] [In Progress]
+**Status:** [Phase I] [Complete]
 
 ---
 
