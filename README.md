@@ -43,13 +43,25 @@ Based on the stack trace, the relevant parts of the codebase are:
 
 ### Environment Setup
 
-[Notes on setting up your local development environment - challenges you faced, how you solved them]
+I am using Intellij IDE and after forking the project I used it to explore the codebase. One thing that helped me was reading the "CONTRIBUTING" and "DEVELOPMENT" guidelines before exploring the codebase. There were two issues (one with Java version and one with a specific package that was being called) that was pointed out and when I run the test for the first time to test if the codebase is working, I already knew the answer. 
 
 ### Steps to Reproduce
 
-1. [Step 1]
-2. [Step 2]
-3. [Observed result]
+1. Forked the code and then downloaded it to my local machine.
+2. Following the guidelines from the project, I run the code to make sure I have a clean base code. Then I tracked down the related test file. In my case, it was related to the copy feature, so I found the corresponding file. After that, I wrote a test to reproduce the error. The test I wrote was:
+   ```
+   @Test
+    public void testCopyNonSerializablePackage() {
+        Fory fory = Fory.builder()
+                .withRefCopy(true)
+                .requireClassRegistration(false)   // get past the registration gate
+                .build();
+        Package pkg = String.class.getPackage(); // java.lang
+        Package copy = fory.copy(pkg);           // now expect the real bug
+    }
+   ```
+I encountered a problem that I had to spend some time figuring out. Specifically, I was expecting the `java.lang.UnsupportedOperationException: Class class java.lang.Package doesn't support serialization` exception, but when I run it the exception was `org.apache.fory.exception.ClassUnregisteredException: Class java.lang.Package is not registered`. I found out that this was expected behavior by the original maintainers. They wanted to make sure we don't use a package that is not registered rather than run it and get an exception. Also, the original issue was raised when using it specifically in `JAVA` mode. But when I was running the test it was being run in cross language path. To resolve this issue, I run added the `.withLanguage(Language.JAVA)` line to force that it was run in Java mode. 
+4. Now that I run the above test, I get the following excpetion `org.apache.fory.exception.CopyException: java.lang.UnsupportedOperationException: Class class java.lang.Package doesn't support serialization.`. It's the exact same error that was asked about in the github. 
 
 ### Reproduction Evidence
 
