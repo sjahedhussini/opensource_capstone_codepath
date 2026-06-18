@@ -65,9 +65,9 @@ I encountered a problem that I had to spend some time figuring out. Specifically
 
 ### Reproduction Evidence
 
-- **Commit showing reproduction:** [Link to commit in your fork]
+- **Commit showing reproduction:** [[Link to commit in your fork]](https://github.com/sjahedhussini/fory/tree/fix-issue-2941)
 - **Screenshots/logs:** [If applicable]
-- **My findings:** [What you discovered during reproduction]
+- **My findings:** Explained above. 
 
 ---
 
@@ -75,19 +75,40 @@ I encountered a problem that I had to spend some time figuring out. Specifically
 
 ### Analysis
 
-[Your analysis of the root cause - what's causing the issue?]
+When tracing the exception, the Java class `ClassResolver.java` is named in the stack trace. When tracing the calls, I found here's exactly why your `java.lang.Package` blows up:
+```
+if (config.checkJdkClassSerializable()) {
+  if (cls.getName().startsWith("java") && !(Serializable.class.isAssignableFrom(cls))) {
+    throw new UnsupportedOperationException(...);
+  }
+}
+```
+`java.lang.Package` satisfies all three conditions: the flag is on, its name starts with "java", and it does not implement Serializable. So it throws the error and is the root cause of the error. This is a serialization check, and it's correct for serialization. But `copy()` reuses this exact same `getSerializerClass` path, and copy has different requirements: copying happens in memory, so a class doesn't need to be serializable to be copyable. The bug is that the copy path inherits a constraint that only applies to serialization.
 
 ### Proposed Solution
 
-[High-level description of your fix approach]
+- 
 
 ### Implementation Plan
 
 Using UMPIRE framework (adapted):
 
-**Understand:** [Restate the problem]
+**Understand:** 
+`Fory.copy(obj)` throws `UnsupportedOperationException: Class java.lang.Package doesn't support serialization` (wrapped in `CopyException`) when the object graph contains a non-Serializable JDK class. The same object round-trips fine through serialize/deserialize. The root cause is in `ClassResolver.getSerializerClass(Class<?>, boolean)` (~line 1503 of the `ClassResolver.java`):
+```
+if (config.checkJdkClassSerializable()) {
+  if (cls.getName().startsWith("java") && !(Serializable.class.isAssignableFrom(cls))) {
+    throw new UnsupportedOperationException(...);
+  }
+}
+```
+This is a serialization guard and is correct for `serialize` (a non-Serializable JDK class can't be turned into valid bytes), but wrong for copy, which is in-memory and has no such requirement. Because copy and serialize share the single per-class serializer created via `createSerializer`, the guard fires at serializer-creation time and blocks copy too.
 
-**Match:** [What similar patterns/solutions exist in the codebase?]
+**Match:** 
+The codebase already has copy-specific serialization machinery I can build on:
+- `ForyCopyable` / `ForyCopyableSerializer` (seen in `createSerializer`): when a class implements `ForyCopyable`, Fory wraps its serializer to give copy distinct behavior from serialize. This proves copy and serialize are meant to be able to diverge.
+- `extRegistry.abstractTypeInfo` lookup in `createSerializer`: the established pattern for routing a class to a specific serializer based on type.
+- `AbstractObjectSerializer.copyFields` (from the original issue trace): the default reflection/field-based copy that a class would reach if it weren't blocked by the guard.
 
 **Plan:** [Step-by-step implementation plan]
 1. [Modify file X to do Y]
