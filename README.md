@@ -111,6 +111,7 @@ The codebase already has copy-specific serialization machinery I can build on:
 - `AbstractObjectSerializer.copyFields` (from the original issue trace): the default reflection/field-based copy that a class would reach if it weren't blocked by the guard.
 
 **Plan:** [Step-by-step implementation plan]
+I posted a comment on the issue thread to ask the code maintianers on how to solve the problem. There are two distinct ways to solve it and I am not sure which they prefer. I am waiting for their response before implementing the changes. 
 1. [Modify file X to do Y]
 2. [Add function Z]
 3. [Update tests]
