@@ -145,7 +145,7 @@ I posted a comment on the issue thread to ask the code maintianers on how to sol
 
 ## Implementation Notes
 
-### Week [X] Progress
+### Week [4] Progress
 
 [What you built this week, challenges faced, decisions made]
 
@@ -163,15 +163,15 @@ I posted a comment on the issue thread to ask the code maintianers on how to sol
 
 ## Pull Request
 
-**PR Link:** [GitHub PR URL when submitted]
+**PR Link:** [[GitHub PR URL when submitted]](https://github.com/apache/fory/pull/3797)
 
-**PR Description:** [Draft or final PR description - much of the content above can be adapted]
+**PR Description:** fix(java): support copy of non-serializable JDK classes such as java.lang.Package
 
 **Maintainer Feedback:**
 - [Date]: [Summary of feedback received]
 - [Date]: [How you addressed it]
 
-**Status:** [Awaiting review / Iterating / Approved / Merged]
+**Status:** [Awaiting review]
 
 ---
 
@@ -179,15 +179,15 @@ I posted a comment on the issue thread to ask the code maintianers on how to sol
 
 ### Technical Skills Gained
 
-[What you learned technically]
+I didn't learn a lot technically, as the problem was simple, and my main goal was to start the contribution process. I did learn about the contribution process. 
 
 ### Challenges Overcome
 
-[What was hard and how you solved it]
+Nothing too difficult in this contribution. 
 
 ### What I'd Do Differently Next Time
 
-[Reflection on your process]
+I would pick the problem more cautiously to solve it. I picked a project that is active with a lot of activity, but I still didn't get any response to my inquiries in regards to the issue. 
 
 ---
 
