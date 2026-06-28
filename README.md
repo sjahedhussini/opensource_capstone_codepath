@@ -65,7 +65,7 @@ I encountered a problem that I had to spend some time figuring out. Specifically
 
 ### Reproduction Evidence
 
-- **Commit showing reproduction:** [[Link to commit in your fork]](https://github.com/sjahedhussini/fory/tree/fix-issue-2941)
+- **Commit showing reproduction:** [Link to commit in your fork](https://github.com/sjahedhussini/fory/tree/fix-issue-2941)
 - **Screenshots/logs:** [If applicable]
 - **My findings:** Explained above. 
 
@@ -163,7 +163,7 @@ I posted a comment on the issue thread to ask the code maintianers on how to sol
 
 ## Pull Request
 
-**PR Link:** [[GitHub PR URL when submitted]](https://github.com/apache/fory/pull/3797)
+**PR Link:** [GitHub PR URL when submitted](https://github.com/apache/fory/pull/3797)
 
 **PR Description:** fix(java): support copy of non-serializable JDK classes such as java.lang.Package
 
